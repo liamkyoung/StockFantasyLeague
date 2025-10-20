@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 
 import java.util.Objects;
 
-// Example WebSocket functionality
 @Slf4j
 @Controller
 public class ChatController {

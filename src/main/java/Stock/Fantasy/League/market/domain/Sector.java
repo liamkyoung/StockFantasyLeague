@@ -1,0 +1,16 @@
+package Stock.Fantasy.League.market.domain;
+
+public enum Sector {
+    COMMUNICATION_SERVICES,
+    CONSUMER_DISCRETIONARY,
+    CONSUMER_STAPLES,
+    ENERGY,
+    FINANCIALS,
+    HEALTH_CARE,
+    INDUSTRIALS,
+    INFORMATION_TECHNOLOGY,
+    MATERIALS,
+    REAL_ESTATE,
+    UTILITIES,
+    OTHER
+}
