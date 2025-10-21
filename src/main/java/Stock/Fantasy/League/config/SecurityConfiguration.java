@@ -24,7 +24,7 @@ public class SecurityConfiguration {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/ws/**").permitAll() // WebSocket endpoint
+                        .requestMatchers("/api/v1/auth/**", "/ws/**").permitAll() // WebSocket endpoint: REMOVE
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->

@@ -71,5 +71,4 @@ public class PriceCache implements PriceCachePort {
         return quotes;
     }
 
-
 }

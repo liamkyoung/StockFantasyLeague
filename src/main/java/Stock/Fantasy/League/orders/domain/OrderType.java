@@ -1,4 +1,4 @@
-package Stock.Fantasy.League.market.domain;
+package Stock.Fantasy.League.orders.domain;
 
 public enum OrderType {
     MARKET,

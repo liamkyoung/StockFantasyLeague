@@ -1,7 +1,7 @@
 package Stock.Fantasy.League.market.infrastructure;
 
 import Stock.Fantasy.League.market.domain.Quote;
-import Stock.Fantasy.League.market.domain.Trade;
+import Stock.Fantasy.League.orders.domain.Order;
 import Stock.Fantasy.League.market.service.MarketDataConsumer;
 import Stock.Fantasy.League.market.service.PriceCachePort;
 import Stock.Fantasy.League.market.service.PricePubSubPort;
@@ -46,7 +46,7 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
     }
 
     @Override
-    public void onTrade(Trade trade) {
-        notifier.publishTrade(trade);
+    public void onTrade(Order order) {
+        notifier.publishOrder(order);
     }
 }
