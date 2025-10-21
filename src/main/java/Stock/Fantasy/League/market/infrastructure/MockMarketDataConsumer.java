@@ -8,7 +8,10 @@ import Stock.Fantasy.League.market.service.PricePubSubPort;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Slf4j
@@ -17,11 +20,29 @@ import org.springframework.stereotype.Service;
 public class MockMarketDataConsumer implements MarketDataConsumer {
     private final PriceCachePort cache;
     private final PricePubSubPort notifier;
+    private final QuoteBatchRepository quoteRepo;
 
     @Override
     public void onQuote(Quote quote) {
         cache.upsert(quote.symbol(), quote.priceInCents());
-        notifier.publishQuote(quote); // Sends to users
+        notifier.publishQuote(quote);
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    private void storeCurrentQuotes() {
+        List<Quote> quotes = cache.getAllQuotes();
+        int[] res = quoteRepo.saveAll(quotes);
+
+        if (res.length == 0) {
+            log.warn("[quotes.batchInsert] FAILED STORING QUOTES");
+            return;
+        }
+
+        log.info("[quotes.batchInsert] STORED QUOTES IN DB");
+    }
+
+    public void onBatchQuote(List<Quote> quotes) {
+        quotes.forEach(this::onQuote);
     }
 
     @Override

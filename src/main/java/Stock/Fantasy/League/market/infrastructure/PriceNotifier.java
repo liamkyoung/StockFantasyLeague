@@ -12,7 +12,7 @@ public class PriceNotifier implements PricePubSubPort {
 
     @Override
     public void publishQuote(Quote quote) {
-        log.info("[NOTIFIED USER]: {}:{}", quote.symbol(), quote.priceInCents());
+        // log.info("[NOTIFIED USER]: {}:{}", quote.symbol(), quote.priceInCents());
     }
 
     @Override

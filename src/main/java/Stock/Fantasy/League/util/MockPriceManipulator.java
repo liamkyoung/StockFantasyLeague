@@ -13,7 +13,7 @@ import java.util.*;
 public class MockPriceManipulator implements PriceManipulator {
     private final Random rng;
 
-    // Annualized drift (mu) and volatility (sigma) by sector (rough ballparks)
+    // Annualized drift (mu) and volatility (sigma) by sector
     private static final double DEFAULT_MU = 0.08;   // 8%/year drift
     private static final double DEFAULT_SIGMA = 0.30; // 30%/year vol
 
@@ -74,8 +74,8 @@ public class MockPriceManipulator implements PriceManipulator {
         return cents;
     }
 
-    public Quote getQuote(Stock stock, Long priceInCents) {
-        long newPrice = calculatePrice(stock, priceInCents, 0.1);
+    public Quote getQuote(Stock stock, Long priceInCents, int pollRate) {
+        long newPrice = calculatePrice(stock, priceInCents, pollRate);
         return new Quote(stock.symbol(), newPrice, new Date().toInstant());
     }
 }
