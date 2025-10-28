@@ -1,4 +1,4 @@
-package Stock.Fantasy.League.exception.custom;
+package Stock.Fantasy.League.auth;
 
 public class EmailAlreadyExistsException extends RuntimeException {
     public EmailAlreadyExistsException(String email) {

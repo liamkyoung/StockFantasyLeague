@@ -1,7 +1,10 @@
-package Stock.Fantasy.League.exception;
+package Stock.Fantasy.League.config;
 
 
-import Stock.Fantasy.League.exception.custom.EmailAlreadyExistsException;
+import Stock.Fantasy.League.auth.EmailAlreadyExistsException;
+import Stock.Fantasy.League.league.exception.LeagueFullException;
+import Stock.Fantasy.League.league.exception.LeagueNotFoundException;
+import Stock.Fantasy.League.league.exception.UserAlreadyInLeagueException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -41,6 +44,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+    // IllegalArgumentException
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(MethodArgumentNotValidException ex) {
         List<String> errors = ex.getBindingResult()
@@ -77,5 +81,35 @@ public class GlobalExceptionHandler {
         body.put("error", "Conflict");
         body.put("message", ex.getMessage());
         return new ResponseEntity<>(body, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(LeagueNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleLeagueNotFound(LeagueNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
+                "timestamp", Instant.now(),
+                "status", 404,
+                "error", "League Not Found",
+                "message", ex.getMessage()
+        ));
+    }
+
+    @ExceptionHandler(LeagueFullException.class)
+    public ResponseEntity<Map<String, Object>> handleLeagueFull(LeagueFullException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "timestamp", Instant.now(),
+                "status", 409,
+                "error", "League Full",
+                "message", ex.getMessage()
+        ));
+    }
+
+    @ExceptionHandler(UserAlreadyInLeagueException.class)
+    public ResponseEntity<Map<String, Object>> handleAlreadyJoined(UserAlreadyInLeagueException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "timestamp", Instant.now(),
+                "status", 409,
+                "error", "Already Joined",
+                "message", ex.getMessage()
+        ));
     }
 }

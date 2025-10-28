@@ -4,6 +4,8 @@ import Stock.Fantasy.League.league.domain.CreateLeagueRequest;
 import Stock.Fantasy.League.league.domain.League;
 import Stock.Fantasy.League.league.domain.LeagueStatus;
 import Stock.Fantasy.League.league.domain.LeagueUser;
+import Stock.Fantasy.League.league.exception.LeagueFullException;
+import Stock.Fantasy.League.league.exception.UserAlreadyInLeagueException;
 import Stock.Fantasy.League.user.User;
 import Stock.Fantasy.League.user.UserRepository;
 import jakarta.transaction.Transactional;
@@ -28,29 +30,27 @@ public class DefaultLeagueService implements LeagueService {
 
     @Override
     public League tryCreateLeague(CreateLeagueRequest request) {
-        Instant now = Instant.now();
-
-        if (now.isBefore(request.startTime()) ||
-            now.isAfter(now.plus(Duration.ofDays(14)))
-        ) return null;
-
         try {
+            Instant now = Instant.now();
+
+            if (now.isAfter(request.startTime()))
+                throw new IllegalArgumentException("Time is invalid");
+
             League league = League.builder()
                     .leagueName(request.leagueName())
                     .createdAt(Instant.now())
                     .startTime(now) // TODO: Push to start 1 day from start, end 1 week after.
                     .endTime(now.plus(Duration.ofDays(7)))
                     .availableSpots(request.availableSpots())
+                    .totalSpots(request.availableSpots())
                     .status(LeagueStatus.SCHEDULED)
                     .build();
 
-
             return leagueRepository.save(league);
-        } catch (Exception e) {
+        } catch (IllegalArgumentException e) {
             log.error("Unable to create league: {}", e.getMessage());
+            throw new IllegalArgumentException();
         }
-
-        return null;
     }
 
     @Override
@@ -70,8 +70,7 @@ public class DefaultLeagueService implements LeagueService {
 
     @Transactional
     @Override
-    public boolean tryJoinLeague(String leagueId, String username) {
-
+    public void tryJoinLeague(String leagueId, String username) {
         League league = leagueRepository.findLeagueById(UUID.fromString(leagueId))
                 .orElseThrow(() -> new IllegalArgumentException("League not found"));
 
@@ -79,12 +78,12 @@ public class DefaultLeagueService implements LeagueService {
                 .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
 
         if (leagueUserRepository.existsByLeague_IdAndUser_Id(league.getId(), user.getId())) {
-            return false;
+            throw new UserAlreadyInLeagueException(username, league.getLeagueName());
         }
 
         int availableSpots = league.getAvailableSpots();
         if (availableSpots <= 0) {
-            return false;
+            throw new LeagueFullException(league.getLeagueName());
         }
 
         league.setAvailableSpots(availableSpots - 1);
@@ -97,8 +96,6 @@ public class DefaultLeagueService implements LeagueService {
 
         leagueUserRepository.save(leagueUser);
         leagueRepository.save(league);
-
-        return true;
     }
 
     @Override

@@ -12,7 +12,7 @@ public interface LeagueService {
     void getLeaderboard(String leagueId);
     Optional<League> tryGetLeague(String leagueId);
     void getAllLeagues();
-    boolean tryJoinLeague(String leagueId, String username);
+    void tryJoinLeague(String leagueId, String username);
     void leaveLeague(String userId, String leagueId);
     void deleteLeague(String leagueId);
 }

@@ -1,4 +1,8 @@
 package Stock.Fantasy.League.league.domain;
 
-public record JoinLeagueRequest(String leagueId) {
+import jakarta.validation.constraints.NotBlank;
+
+public record JoinLeagueRequest(
+        @NotBlank String leagueId
+) {
 }

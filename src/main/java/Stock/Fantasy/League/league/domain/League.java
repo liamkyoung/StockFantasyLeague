@@ -20,6 +20,7 @@ public class League {
     @Version
     private int version;
 
+    @Column(nullable = false)
     private String leagueName;
     private Instant createdAt = Instant.now();
     private Instant startTime;
@@ -29,6 +30,16 @@ public class League {
     private LeagueStatus status;
 
     private int availableSpots = 10;
+    private int totalSpots = availableSpots;
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) createdAt = Instant.now();
+        if (status == null) status = LeagueStatus.SCHEDULED;
+        if (availableSpots == 0) availableSpots = 10;
+        if (totalSpots == 0) totalSpots = availableSpots;
+    }
+
 }
 
 // league

@@ -1,7 +1,6 @@
 package Stock.Fantasy.League.auth;
 
 import Stock.Fantasy.League.config.JwtService;
-import Stock.Fantasy.League.exception.custom.EmailAlreadyExistsException;
 import Stock.Fantasy.League.user.Role;
 import Stock.Fantasy.League.user.User;
 import Stock.Fantasy.League.user.UserRepository;
