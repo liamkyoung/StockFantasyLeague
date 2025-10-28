@@ -1,6 +1,7 @@
 package Stock.Fantasy.League.user;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -21,9 +23,12 @@ import java.util.List;
 public class User implements UserDetails {
     @Id
     @GeneratedValue
-    private Integer id;
+    private UUID id;
     private String firstName;
     private String lastName;
+
+    @Email
+    @Column(unique = true, nullable = false)
     private String email;
     private String password;
     private boolean isExpired;

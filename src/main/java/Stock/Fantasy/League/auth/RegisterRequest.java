@@ -1,5 +1,8 @@
 package Stock.Fantasy.League.auth;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
+    @NotBlank private String firstName;
+    @NotBlank private String lastName;
+    @NotBlank @Email private String email;
+    @NotBlank private String password;
 }

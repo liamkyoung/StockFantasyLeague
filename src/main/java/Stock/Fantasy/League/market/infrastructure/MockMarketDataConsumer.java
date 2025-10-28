@@ -38,7 +38,7 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
             return;
         }
 
-        log.info("[quotes.batchInsert] STORED QUOTES IN DB");
+        log.info("[quotes.batchInsert] STORED QUOTE SNAPSHOT IN DB");
     }
 
     public void onBatchQuote(List<Quote> quotes) {

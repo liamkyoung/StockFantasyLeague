@@ -7,7 +7,5 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface LeagueRepository extends JpaRepository<League, UUID> {
-    Optional<League> findLeagueByLeagueId(UUID leagueId);
-    Optional<League> findLeagueByLeagueName(String leagueName);
-
+    Optional<League> findLeagueById(UUID id);
 }

@@ -15,7 +15,10 @@ import java.util.UUID;
 public class League {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID leagueId;
+    private UUID id;
+
+    @Version
+    private int version;
 
     private String leagueName;
     private Instant createdAt = Instant.now();
@@ -25,7 +28,7 @@ public class League {
     @Enumerated(EnumType.STRING)
     private LeagueStatus status;
 
-    private int userLimit = 10;
+    private int availableSpots = 10;
 }
 
 // league

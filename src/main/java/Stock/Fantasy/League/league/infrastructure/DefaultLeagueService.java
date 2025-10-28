@@ -3,8 +3,13 @@ package Stock.Fantasy.League.league.infrastructure;
 import Stock.Fantasy.League.league.domain.CreateLeagueRequest;
 import Stock.Fantasy.League.league.domain.League;
 import Stock.Fantasy.League.league.domain.LeagueStatus;
+import Stock.Fantasy.League.league.domain.LeagueUser;
+import Stock.Fantasy.League.user.User;
+import Stock.Fantasy.League.user.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -17,6 +22,8 @@ import java.util.UUID;
 @Service
 public class DefaultLeagueService implements LeagueService {
     private final LeagueRepository leagueRepository;
+    private final LeagueUserRepository leagueUserRepository;
+    private final UserRepository userRepository;
 
 
     @Override
@@ -33,6 +40,7 @@ public class DefaultLeagueService implements LeagueService {
                     .createdAt(Instant.now())
                     .startTime(now) // TODO: Push to start 1 day from start, end 1 week after.
                     .endTime(now.plus(Duration.ofDays(7)))
+                    .availableSpots(request.availableSpots())
                     .status(LeagueStatus.SCHEDULED)
                     .build();
 
@@ -52,7 +60,7 @@ public class DefaultLeagueService implements LeagueService {
 
     @Override
     public Optional<League> tryGetLeague(String leagueId) {
-        return leagueRepository.findLeagueByLeagueId(UUID.fromString(leagueId));
+        return leagueRepository.findLeagueById(UUID.fromString(leagueId));
     }
 
     @Override
@@ -60,9 +68,37 @@ public class DefaultLeagueService implements LeagueService {
 
     }
 
+    @Transactional
     @Override
-    public void joinLeague(String userId, String leagueId) {
+    public boolean tryJoinLeague(String leagueId, String username) {
 
+        League league = leagueRepository.findLeagueById(UUID.fromString(leagueId))
+                .orElseThrow(() -> new IllegalArgumentException("League not found"));
+
+        User user = userRepository.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+
+        if (leagueUserRepository.existsByLeague_IdAndUser_Id(league.getId(), user.getId())) {
+            return false;
+        }
+
+        int availableSpots = league.getAvailableSpots();
+        if (availableSpots <= 0) {
+            return false;
+        }
+
+        league.setAvailableSpots(availableSpots - 1);
+
+        var leagueUser = LeagueUser.builder()
+                .user(user)
+                .league(league)
+                .joinedAt(Instant.now())
+                .build();
+
+        leagueUserRepository.save(leagueUser);
+        leagueRepository.save(league);
+
+        return true;
     }
 
     @Override

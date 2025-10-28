@@ -1,10 +1,19 @@
 package Stock.Fantasy.League.league.domain;
 
+import Stock.Fantasy.League.user.User;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.Instant;
 import java.util.UUID;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(
         name="league_users",
@@ -16,9 +25,13 @@ public class LeagueUser {
     private UUID leagueUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="league_id")
+    @JoinColumn(name="league_id", nullable = false)
     private League league;
 
-    private UUID userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     private Instant joinedAt = Instant.now();
 }
