@@ -79,7 +79,7 @@ public class PriceCache implements PriceCachePort {
         for (String symbol : StockDirectory.allSymbols()) {
             var currPrice = get(symbol);
 
-            String key = "orders:" + symbol + ":";
+            String key = "order:" + symbol + ":";
             var buyLimitOrders = getOrderIdsAbovePrice(key + OrderSide.BUY.name(), currPrice)
                     .stream().map(UUID::fromString).toList();
 
@@ -103,15 +103,20 @@ public class PriceCache implements PriceCachePort {
         var res = redis.opsForZSet()
                 .rangeByScore(key, minPrice, Double.POSITIVE_INFINITY);
 
-        redis.opsForZSet().removeRange(key, minPrice, Long.MAX_VALUE);
+        redis.opsForZSet().removeRangeByScore(key, minPrice, Double.POSITIVE_INFINITY);
 
         return res;
     }
 
     // SELL LIMIT ORDER (If order < price, peak to sell)
     private Set<String> getOrderIdsBelowPrice(String key, Long maxPrice) {
-        return redis.opsForZSet()
+
+        var res = redis.opsForZSet()
                 .rangeByScore(key, Double.NEGATIVE_INFINITY, maxPrice);
+
+        redis.opsForZSet().removeRangeByScore(key, Double.NEGATIVE_INFINITY, maxPrice);
+
+        return res;
     }
 
 }

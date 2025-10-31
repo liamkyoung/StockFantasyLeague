@@ -93,6 +93,7 @@ public class MarketOrderService implements OrderService {
     public List<Order> getOrdersReadyToExecute() {
         var validOrderIds = priceCache.getExecutableOrderIds();
 
+        log.info("SIZE OF VALID ORDERS: {}", validOrderIds.size());
         return orderRepository.findAllById(validOrderIds);
     }
 

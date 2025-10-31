@@ -41,7 +41,6 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
     @Override
     public void onQuote(Quote quote) {
         cache.upsert(quote.symbol(), quote.priceInCents());
-        // TODO: Order Execution
         notifier.publishQuote(quote);
     }
 
