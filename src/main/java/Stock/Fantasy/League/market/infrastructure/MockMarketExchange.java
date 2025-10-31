@@ -4,6 +4,8 @@ import Stock.Fantasy.League.market.domain.Quote;
 import Stock.Fantasy.League.market.domain.Stock;
 import Stock.Fantasy.League.market.service.MarketDataConsumer;
 import Stock.Fantasy.League.market.service.MarketExchange;
+import Stock.Fantasy.League.orders.domain.Order;
+import Stock.Fantasy.League.orders.infrastructure.OrderService;
 import Stock.Fantasy.League.util.PriceManipulator;
 import Stock.Fantasy.League.util.StockDirectory;
 import lombok.AllArgsConstructor;
@@ -17,17 +19,22 @@ import java.util.List;
 @AllArgsConstructor
 @Service
 public class MockMarketExchange implements MarketExchange {
-   private final StockDirectory stockDirectory;
    private final MarketDataConsumer consumer;
    private final PriceManipulator priceManipulator;
    private final PriceCache priceCache;
+   private final OrderService orderService;
 
    private final int POLL_RATE = 1;
     @Scheduled(fixedRate = 1000 * POLL_RATE)
     @Override
     public void start() {
+        updateStockPrices();
+        updateReadyOrders();
+    }
+
+    private void updateStockPrices() {
         List<Quote> quotes = new ArrayList<>();
-        for (Stock s : stockDirectory.all()) {
+        for (Stock s : StockDirectory.all()) {
             Long currentPrice = priceCache.get(s.symbol());
             if (currentPrice == null) {
                 currentPrice = s.initPrice();
@@ -37,6 +44,11 @@ public class MockMarketExchange implements MarketExchange {
             quotes.add(q);
         }
         consumer.onBatchQuote(quotes);
+    }
+
+    private void updateReadyOrders() {
+        List<Order> readyOrders = orderService.getOrdersReadyToExecute();
+        consumer.executeOrders(readyOrders);
     }
 
     @Override

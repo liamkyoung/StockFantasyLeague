@@ -3,6 +3,8 @@ package Stock.Fantasy.League.market.infrastructure;
 import Stock.Fantasy.League.market.domain.Quote;
 import Stock.Fantasy.League.market.domain.Stock;
 import Stock.Fantasy.League.market.service.PriceCachePort;
+import Stock.Fantasy.League.orders.domain.OrderSide;
+import Stock.Fantasy.League.orders.domain.OrderType;
 import Stock.Fantasy.League.util.StockDirectory;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,12 +21,11 @@ import static java.lang.Long.parseLong;
 @Slf4j
 public class PriceCache implements PriceCachePort {
     private final StringRedisTemplate redis;
-    private final StockDirectory stockDirectory;
 
     @Override
     public void upsert(String symbol, Long priceInCents) throws IllegalArgumentException {
         try {
-            if (!stockDirectory.isValidSymbol(symbol)) {
+            if (!StockDirectory.isValidSymbol(symbol)) {
                 throw new IllegalArgumentException("Invalid symbol: " + symbol);
             }
 
@@ -45,7 +46,7 @@ public class PriceCache implements PriceCachePort {
 
     @Override
     public List<Quote> getAllQuotes() {
-        List<String> symbols = stockDirectory.all().stream()
+        List<String> symbols = StockDirectory.all().stream()
                 .map(Stock::symbol)
                 .toList();
 
@@ -69,6 +70,48 @@ public class PriceCache implements PriceCachePort {
         }
 
         return quotes;
+    }
+
+    @Override
+    public List<UUID> getExecutableOrderIds() {
+        List<UUID> validOrderIds = new ArrayList<>();
+
+        for (String symbol : StockDirectory.allSymbols()) {
+            var currPrice = get(symbol);
+
+            String key = "orders:" + symbol + ":";
+            var buyLimitOrders = getOrderIdsAbovePrice(key + OrderSide.BUY.name(), currPrice)
+                    .stream().map(UUID::fromString).toList();
+
+            var sellLimitOrders = getOrderIdsBelowPrice(key + OrderSide.SELL.name(), currPrice)
+                    .stream().map(UUID::fromString).toList();
+
+
+
+            validOrderIds.addAll(buyLimitOrders);
+            validOrderIds.addAll(sellLimitOrders);
+        }
+
+        return validOrderIds;
+    }
+
+    // BELOW PRICE + BUY LIMIT => EXECUTE
+    // ABOVE PRICE + SELL LIMIT => EXECUTE
+
+    // BUY LIMIT ORDER (If order is > price, bottom to buy)
+    private Set<String> getOrderIdsAbovePrice(String key, Long minPrice) {
+        var res = redis.opsForZSet()
+                .rangeByScore(key, minPrice, Double.POSITIVE_INFINITY);
+
+        redis.opsForZSet().removeRange(key, minPrice, Long.MAX_VALUE);
+
+        return res;
+    }
+
+    // SELL LIMIT ORDER (If order < price, peak to sell)
+    private Set<String> getOrderIdsBelowPrice(String key, Long maxPrice) {
+        return redis.opsForZSet()
+                .rangeByScore(key, Double.NEGATIVE_INFINITY, maxPrice);
     }
 
 }

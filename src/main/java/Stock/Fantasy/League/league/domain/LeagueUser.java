@@ -1,5 +1,6 @@
 package Stock.Fantasy.League.league.domain;
 
+import Stock.Fantasy.League.portfolio.Portfolio;
 import Stock.Fantasy.League.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,9 @@ public class LeagueUser {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToOne(mappedBy = "leagueUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Portfolio portfolio;
 
     private Instant joinedAt = Instant.now();
 }

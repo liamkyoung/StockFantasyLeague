@@ -5,6 +5,7 @@ import Stock.Fantasy.League.auth.EmailAlreadyExistsException;
 import Stock.Fantasy.League.league.exception.LeagueFullException;
 import Stock.Fantasy.League.league.exception.LeagueNotFoundException;
 import Stock.Fantasy.League.league.exception.UserAlreadyInLeagueException;
+import Stock.Fantasy.League.league.exception.UserNotInLeagueException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -109,6 +110,16 @@ public class GlobalExceptionHandler {
                 "timestamp", Instant.now(),
                 "status", 409,
                 "error", "Already Joined",
+                "message", ex.getMessage()
+        ));
+    }
+
+    @ExceptionHandler(UserNotInLeagueException.class)
+    public ResponseEntity<Map<String, Object>> handleNotJoined(UserNotInLeagueException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                "timestamp", Instant.now(),
+                "status", 400,
+                "error", "User not in league",
                 "message", ex.getMessage()
         ));
     }

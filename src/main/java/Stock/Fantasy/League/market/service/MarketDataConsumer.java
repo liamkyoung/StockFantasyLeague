@@ -9,4 +9,7 @@ public interface MarketDataConsumer {
     void onBatchQuote(List<Quote> batch);
     void onQuote(Quote quote);
     void onTrade(Order order); // TODO
+    void executeOrders(List<Order> orders);
+    void queueOrder(Order order);
+    void storeCurrentQuotes();
 }

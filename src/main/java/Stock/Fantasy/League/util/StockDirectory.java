@@ -12,7 +12,7 @@ import java.util.*;
 @Component
 public class StockDirectory {
 
-    private final Map<String, Stock> bySymbol = new HashMap<>();
+    private static final Map<String, Stock> bySymbol = new HashMap<>();
 
     public StockDirectory() {
         registerTopStocks();
@@ -126,16 +126,20 @@ public class StockDirectory {
     }
 
 
-    public Optional<Stock> find(String symbol) {
+    public static Optional<Stock> find(String symbol) {
         if (symbol == null) return Optional.empty();
         return Optional.ofNullable(bySymbol.get(symbol.toUpperCase(Locale.ROOT)));
     }
 
-    public boolean isValidSymbol(String symbol) {
+    public static boolean isValidSymbol(String symbol) {
         return find(symbol).isPresent();
     }
 
-    public Collection<Stock> all() {
+    public static Collection<Stock> all() {
         return Collections.unmodifiableCollection(bySymbol.values());
+    }
+
+    public static Collection<String> allSymbols() {
+        return Collections.unmodifiableCollection(bySymbol.values().stream().map(Stock::symbol).toList());
     }
 }
