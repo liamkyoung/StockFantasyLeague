@@ -1,11 +1,11 @@
 package Stock.Fantasy.League.config;
 
 
-import Stock.Fantasy.League.auth.EmailAlreadyExistsException;
-import Stock.Fantasy.League.league.exception.LeagueFullException;
-import Stock.Fantasy.League.league.exception.LeagueNotFoundException;
-import Stock.Fantasy.League.league.exception.UserAlreadyInLeagueException;
-import Stock.Fantasy.League.league.exception.UserNotInLeagueException;
+import Stock.Fantasy.League.auth.domain.exceptions.EmailAlreadyExistsException;
+import Stock.Fantasy.League.league.domain.exception.LeagueFullException;
+import Stock.Fantasy.League.league.domain.exception.LeagueNotFoundException;
+import Stock.Fantasy.League.league.domain.exception.UserAlreadyInLeagueException;
+import Stock.Fantasy.League.league.domain.exception.UserNotInLeagueException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;

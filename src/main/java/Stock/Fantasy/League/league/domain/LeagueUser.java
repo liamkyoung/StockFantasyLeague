@@ -1,7 +1,7 @@
 package Stock.Fantasy.League.league.domain;
 
-import Stock.Fantasy.League.portfolio.Portfolio;
-import Stock.Fantasy.League.user.User;
+import Stock.Fantasy.League.portfolio.domain.Portfolio;
+import Stock.Fantasy.League.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
