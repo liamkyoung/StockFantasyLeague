@@ -6,15 +6,18 @@ import Stock.Fantasy.League.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
-@Entity
-@Table(name = "portfolios")
+
 @Builder
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "portfolios")
 public class Portfolio {
     @Id @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;

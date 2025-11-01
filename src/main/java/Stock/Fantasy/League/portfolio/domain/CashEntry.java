@@ -15,7 +15,7 @@ import java.util.UUID;
 @Table(name="cash_ledger", indexes = {
         @Index(name = "idx_cash_portfolio_time", columnList = "portfolio_id, timestamp"),
 })
-public class CashLedger {
+public class CashEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
