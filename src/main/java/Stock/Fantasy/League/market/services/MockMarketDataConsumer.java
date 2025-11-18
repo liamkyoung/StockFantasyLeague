@@ -1,5 +1,6 @@
 package Stock.Fantasy.League.market.services;
 
+import Stock.Fantasy.League.league.infra.persistence.LeagueUserRepository;
 import Stock.Fantasy.League.market.domain.Quote;
 import Stock.Fantasy.League.market.infra.persistence.QuoteBatchRepository;
 import Stock.Fantasy.League.orders.domain.Execution;
@@ -8,6 +9,7 @@ import Stock.Fantasy.League.orders.domain.OrderState;
 import Stock.Fantasy.League.orders.infra.persistence.ExecutionRepository;
 import Stock.Fantasy.League.orders.infra.persistence.OrderRepository;
 import Stock.Fantasy.League.portfolio.services.PortfolioService;
+import Stock.Fantasy.League.user.infra.persistence.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +34,8 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
     private final PortfolioService portfolioService;
     private final ExecutionRepository executionRepository;
     private final OrderRepository orderRepository;
+    private final LeagueUserRepository leagueUserRepository;
+    private final UserRepository userRepository;
 
     @Override
     public void onQuote(Quote quote) {
@@ -70,7 +74,8 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
 
         for (Order order : orders) {
             // TODO: Can optimize calls to portfolio service
-            var balance = portfolioService.getCashBalance(order.getUserId());
+            var leagueUser = leagueUserRepository.findByLeagueIdAndUser_Id(order.getLeagueId(), order.getUserId());
+            var balance = portfolioService.getCashBalance(leagueUser);
             var symbol = order.getSymbol();
             var now = Instant.now();
             var maxQty = order.getQuantity();
@@ -102,11 +107,16 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
                     .priceCents(price)
                     .symbol(symbol)
                     .quantity(maxQty)
+                    .side(order.getSide())
                     .build();
 
             savedExecutions.add(execution);
             savedOrders.add(order);
+
+            // positions, cash ledger entry, portfolio update
+            portfolioService.updatePortfolio(leagueUser, execution.toDto());
         }
+
 
         executionRepository.saveAll(savedExecutions);
         orderRepository.saveAll(savedOrders);

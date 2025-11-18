@@ -1,5 +1,8 @@
 package Stock.Fantasy.League.portfolio.domain;
 
+import Stock.Fantasy.League.orders.domain.Execution;
+import Stock.Fantasy.League.orders.domain.ExecutionDto;
+import Stock.Fantasy.League.orders.domain.OrderSide;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -50,5 +53,21 @@ public class Position {
     public void preUpdate() {
         updatedAt = Instant.now();
         if (symbol != null) symbol = symbol.toUpperCase();
+    }
+
+    public void updatePosition(ExecutionDto execution) {
+        var orderSide = execution.orderSide();
+
+        var positionTotalCents = (avgPriceCents * quantity);
+        var executionPriceCents = execution.priceCents() * execution.quantity();
+
+        updatedAt = execution.executedAt();
+        realizedPnlCents += orderSide.equals(OrderSide.SELL) ? (execution.priceCents() - avgPriceCents) * execution.quantity(): 0;
+
+        var newTotalCents = positionTotalCents + (orderSide.equals(OrderSide.SELL) ? -1 * executionPriceCents : executionPriceCents);
+        var newQty = quantity + (orderSide.equals(OrderSide.SELL) ? -1 * execution.quantity() : execution.quantity());
+
+        avgPriceCents = newQty != 0 ? newTotalCents / newQty : 0;
+        quantity = newQty;
     }
 }

@@ -17,5 +17,4 @@ public record CreateOrderRequest(
 
         @Min(value=1, message="Price must be at least 1")
         Long price // IN CENTS
-) {
-}
+) { }

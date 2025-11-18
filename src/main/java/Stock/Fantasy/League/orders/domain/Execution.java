@@ -33,4 +33,12 @@ public class Execution {
 
     @Column(nullable = false)
     private Instant executedAt = Instant.now();
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private OrderSide side;
+
+    public ExecutionDto toDto() {
+        return new ExecutionDto(id, symbol, quantity, priceCents, executedAt, side);
+    }
 }

@@ -21,7 +21,7 @@ public class CashEntry {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "portfolio_id", nullable = false, unique = true)
+    @JoinColumn(name = "portfolio_id", nullable = false)
     private Portfolio portfolio;
 
     @Column(nullable = false)
@@ -33,7 +33,4 @@ public class CashEntry {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransactionType type;
-
-    @JoinColumn(name="execution_id", nullable = false)
-    private UUID executionId;
 }

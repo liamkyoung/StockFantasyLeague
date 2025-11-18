@@ -4,12 +4,15 @@ import Stock.Fantasy.League.league.domain.exception.UserNotInLeagueException;
 import Stock.Fantasy.League.league.infra.persistence.LeagueUserRepository;
 import Stock.Fantasy.League.market.services.MarketDataConsumer;
 import Stock.Fantasy.League.market.services.PriceCachePort;
+import Stock.Fantasy.League.orders.domain.exceptions.InvalidOrderException;
 import Stock.Fantasy.League.orders.infra.web.CreateOrderRequest;
 import Stock.Fantasy.League.orders.domain.OrderState;
 import Stock.Fantasy.League.orders.domain.OrderType;
 import Stock.Fantasy.League.orders.domain.Order;
 import Stock.Fantasy.League.orders.domain.exceptions.SymbolNotFoundException;
 import Stock.Fantasy.League.orders.infra.persistence.OrderRepository;
+import Stock.Fantasy.League.portfolio.infra.persistence.PortfolioRepository;
+import Stock.Fantasy.League.portfolio.services.PortfolioService;
 import Stock.Fantasy.League.user.domain.User;
 import Stock.Fantasy.League.user.infra.persistence.UserRepository;
 import Stock.Fantasy.League.util.StockDirectory;
@@ -31,6 +34,7 @@ public class MarketOrderService implements OrderService {
     private final LeagueUserRepository leagueUserRepository;
     private final PriceCachePort priceCache;
     private final MarketDataConsumer market;
+    private final PortfolioService portfolioService;
 
     @Override
     public Order tryCreateOrder(CreateOrderRequest request, String username) {
@@ -57,6 +61,12 @@ public class MarketOrderService implements OrderService {
 
             if (!StockDirectory.isValidSymbol(request.symbol())) {
                 throw new SymbolNotFoundException(request.symbol());
+            }
+
+            var leagueUser = leagueUserRepository.getLeagueUserByUser(user);
+
+            if (!portfolioService.canCreateOrder(leagueUser, request)) {
+                throw new InvalidOrderException("Could not create order. USER: " + user.getEmail());
             }
 
             var order = Order.builder()

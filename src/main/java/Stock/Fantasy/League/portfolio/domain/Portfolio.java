@@ -32,4 +32,8 @@ public class Portfolio {
 
     @Column(nullable = false)
     private long cashBalanceCents = 1000L * 100; // Default: players start with $1000.00
+
+    public void updateCashBalance(Long amt) {
+        cashBalanceCents += amt;
+    }
 }

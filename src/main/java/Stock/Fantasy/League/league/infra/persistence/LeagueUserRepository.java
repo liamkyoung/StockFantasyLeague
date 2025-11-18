@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface LeagueUserRepository extends JpaRepository<LeagueUser, UUID>  {
     boolean existsByLeague_IdAndUser_Id(UUID leagueId, UUID userId);
 
-    Object getLeagueUserByUser(User user);
-
+    LeagueUser getLeagueUserByUser(User user);
+    LeagueUser findByLeagueIdAndUser_Id(UUID leagueId, UUID userId);
     Object getLeagueUserByLeagueUserId(UUID leagueUserId);
 }
