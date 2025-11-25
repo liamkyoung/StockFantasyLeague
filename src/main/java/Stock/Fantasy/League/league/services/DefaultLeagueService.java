@@ -8,8 +8,6 @@ import Stock.Fantasy.League.league.domain.LeagueStatus;
 import Stock.Fantasy.League.league.domain.LeagueUser;
 import Stock.Fantasy.League.league.domain.exception.LeagueFullException;
 import Stock.Fantasy.League.league.domain.exception.UserAlreadyInLeagueException;
-import Stock.Fantasy.League.portfolio.domain.Portfolio;
-import Stock.Fantasy.League.portfolio.infra.persistence.PortfolioRepository;
 import Stock.Fantasy.League.user.domain.User;
 import Stock.Fantasy.League.user.infra.persistence.UserRepository;
 import jakarta.transaction.Transactional;
@@ -30,7 +28,6 @@ public class DefaultLeagueService implements LeagueService {
     private final LeagueRepository leagueRepository;
     private final LeagueUserRepository leagueUserRepository;
     private final UserRepository userRepository;
-    private final PortfolioRepository portfolioRepository;
 
 
     @Override
@@ -96,16 +93,11 @@ public class DefaultLeagueService implements LeagueService {
         var leagueUser = LeagueUser.builder()
                 .user(user)
                 .league(league)
+                .cashBalanceCents(1000L * 100)
                 .joinedAt(Instant.now())
                 .build();
 
-        var portfolio = Portfolio.builder()
-                .leagueUser(leagueUser)
-                .cashBalanceCents(1000L * 100)
-                .build();
-
         leagueUserRepository.save(leagueUser);
-        portfolioRepository.save(portfolio);
         leagueRepository.save(league);
     }
 

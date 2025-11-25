@@ -1,5 +1,6 @@
 package Stock.Fantasy.League.portfolio.domain;
 
+import Stock.Fantasy.League.league.domain.LeagueUser;
 import Stock.Fantasy.League.orders.domain.Execution;
 import Stock.Fantasy.League.orders.domain.ExecutionDto;
 import Stock.Fantasy.League.orders.domain.OrderSide;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @Entity
 @Table(
         name="positions",
-        uniqueConstraints=@UniqueConstraint(columnNames={"portfolio_id","symbol"})
+        uniqueConstraints=@UniqueConstraint(columnNames={"league_user_id","symbol"})
 )
 public class Position {
     @Id
@@ -25,8 +26,8 @@ public class Position {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="portfolio_id", nullable = false)
-    private Portfolio portfolio;
+    @JoinColumn(name = "league_user_id", nullable = false, unique = true)
+    private LeagueUser leagueUser;
 
     @Column(nullable = false, length = 24)
     private String symbol;

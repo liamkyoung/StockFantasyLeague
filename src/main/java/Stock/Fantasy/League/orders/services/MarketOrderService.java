@@ -11,7 +11,6 @@ import Stock.Fantasy.League.orders.domain.OrderType;
 import Stock.Fantasy.League.orders.domain.Order;
 import Stock.Fantasy.League.orders.domain.exceptions.SymbolNotFoundException;
 import Stock.Fantasy.League.orders.infra.persistence.OrderRepository;
-import Stock.Fantasy.League.portfolio.infra.persistence.PortfolioRepository;
 import Stock.Fantasy.League.portfolio.services.PortfolioService;
 import Stock.Fantasy.League.user.domain.User;
 import Stock.Fantasy.League.user.infra.persistence.UserRepository;
@@ -73,8 +72,7 @@ public class MarketOrderService implements OrderService {
                     .createdAt(Instant.now())
                     .symbol(request.symbol())
                     .state(OrderState.PENDING)
-                    .leagueId(leagueId)
-                    .userId(userId)
+                    .leagueUser(leagueUser)
                     .type(request.type())
                     .side(request.side())
                     .quantity(request.qty())

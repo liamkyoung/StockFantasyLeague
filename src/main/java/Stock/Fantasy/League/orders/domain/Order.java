@@ -1,5 +1,6 @@
 package Stock.Fantasy.League.orders.domain;
 
+import Stock.Fantasy.League.league.domain.LeagueUser;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -16,18 +17,16 @@ import java.util.UUID;
 @Entity
 @Table(
         name="orders",
-        indexes = @Index(name="idx_orders_user_time", columnList="league_id,user_id,created_at DESC")
+        indexes = @Index(name="idx_orders_user_time", columnList="league_user_id,created_at DESC")
 )
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
-    private UUID leagueId;
-
-    @Column(nullable = false)
-    private UUID userId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "league_user_id", nullable = false, unique = true)
+    private LeagueUser leagueUser;
 
     @Column(nullable = false, updatable = false)
     private String symbol;

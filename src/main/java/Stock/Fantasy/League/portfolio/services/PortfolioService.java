@@ -12,8 +12,5 @@ import java.util.UUID;
 
 public interface PortfolioService {
     void updatePortfolio(LeagueUser user, ExecutionDto execution);
-    long getCashBalance(LeagueUser leagueUser);
-    void subtractCashBalance(UUID userId, long amountInCents);
-    void addCashBalance(UUID userId, long amountInCents);
     boolean canCreateOrder(LeagueUser leagueUser, CreateOrderRequest orderRequest);
 }

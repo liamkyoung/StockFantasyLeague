@@ -9,6 +9,6 @@ public interface Stock {
     String symbol();
     String name();
     Sector sector();
-    String industry();
+    Industry industry();
     long initPrice();
 }

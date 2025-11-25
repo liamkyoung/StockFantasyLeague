@@ -1,6 +1,5 @@
 package Stock.Fantasy.League.league.domain;
 
-import Stock.Fantasy.League.portfolio.domain.Portfolio;
 import Stock.Fantasy.League.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -34,8 +33,12 @@ public class LeagueUser {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToOne(mappedBy = "leagueUser", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Portfolio portfolio;
-
     private Instant joinedAt = Instant.now();
+
+    @Column(nullable = false)
+    private long cashBalanceCents = 1000L * 100; // Default: players start with $1000.00
+
+    public void updateCashBalance(Long amt) {
+        cashBalanceCents += amt;
+    }
 }

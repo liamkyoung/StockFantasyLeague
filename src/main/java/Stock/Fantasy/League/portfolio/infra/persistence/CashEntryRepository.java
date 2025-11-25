@@ -13,9 +13,9 @@ public interface CashEntryRepository extends JpaRepository<CashEntry, UUID> {
     @Query("""
                select coalesce(sum(c.amountInCents),0)
                from CashEntry c
-               where c.portfolio.id = :pid
+               where c.leagueUser.leagueUserId = :luId
                  and c.timestamp <= :asOf
             """)
-    long currentBalance(@Param("pid") UUID portfolioId,
+    long currentBalance(@Param("luId") UUID leagueUserId,
                      @Param("asOf") Instant asOf);
 }

@@ -34,8 +34,6 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
     private final PortfolioService portfolioService;
     private final ExecutionRepository executionRepository;
     private final OrderRepository orderRepository;
-    private final LeagueUserRepository leagueUserRepository;
-    private final UserRepository userRepository;
 
     @Override
     public void onQuote(Quote quote) {
@@ -74,8 +72,7 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
 
         for (Order order : orders) {
             // TODO: Can optimize calls to portfolio service
-            var leagueUser = leagueUserRepository.findByLeagueIdAndUser_Id(order.getLeagueId(), order.getUserId());
-            var balance = portfolioService.getCashBalance(leagueUser);
+            var balance = order.getLeagueUser().getCashBalanceCents();
             var symbol = order.getSymbol();
             var now = Instant.now();
             var maxQty = order.getQuantity();
@@ -114,9 +111,8 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
             savedOrders.add(order);
 
             // positions, cash ledger entry, portfolio update
-            portfolioService.updatePortfolio(leagueUser, execution.toDto());
+            portfolioService.updatePortfolio(order.getLeagueUser(), execution.toDto());
         }
-
 
         executionRepository.saveAll(savedExecutions);
         orderRepository.saveAll(savedOrders);

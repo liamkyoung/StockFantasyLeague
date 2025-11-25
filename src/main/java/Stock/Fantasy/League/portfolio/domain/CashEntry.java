@@ -1,5 +1,6 @@
 package Stock.Fantasy.League.portfolio.domain;
 
+import Stock.Fantasy.League.league.domain.LeagueUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name="cash_ledger", indexes = {
-        @Index(name = "idx_cash_portfolio_time", columnList = "portfolio_id, timestamp"),
+        @Index(name = "idx_cash_portfolio_time", columnList = "league_user_id, timestamp"),
 })
 public class CashEntry {
     @Id
@@ -21,8 +22,8 @@ public class CashEntry {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "portfolio_id", nullable = false)
-    private Portfolio portfolio;
+    @JoinColumn(name = "league_user_id", nullable = false, unique = true)
+    private LeagueUser leagueUser;
 
     @Column(nullable = false)
     private Instant timestamp = Instant.now();
