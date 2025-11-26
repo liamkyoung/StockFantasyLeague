@@ -35,7 +35,7 @@ public class PortfolioController {
             throw new UsernameNotFoundException("User not found");
         }
 
-        var leagueUser = (LeagueUser)leagueUserRepository.getLeagueUserByUser(user.get());
+        var leagueUser = leagueUserRepository.getLeagueUserByUser(user.get());
 
         var res = PortfolioResponse.builder()
                 .positions(new ArrayList<>())

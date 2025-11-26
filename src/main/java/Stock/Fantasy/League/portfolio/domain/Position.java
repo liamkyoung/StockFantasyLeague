@@ -58,17 +58,18 @@ public class Position {
 
     public void updatePosition(ExecutionDto execution) {
         var orderSide = execution.orderSide();
+        var qty = execution.quantity();
+        var isSelling = orderSide.equals(OrderSide.SELL);
 
-        var positionTotalCents = (avgPriceCents * quantity);
-        var executionPriceCents = execution.priceCents() * execution.quantity();
+        var totalCents = (avgPriceCents * quantity);
+        var executionPriceCents = execution.priceCents() * qty;
 
         updatedAt = execution.executedAt();
-        realizedPnlCents += orderSide.equals(OrderSide.SELL) ? (execution.priceCents() - avgPriceCents) * execution.quantity(): 0;
+        realizedPnlCents += isSelling ? (execution.priceCents() - avgPriceCents) * qty : 0;
 
-        var newTotalCents = positionTotalCents + (orderSide.equals(OrderSide.SELL) ? -1 * executionPriceCents : executionPriceCents);
-        var newQty = quantity + (orderSide.equals(OrderSide.SELL) ? -1 * execution.quantity() : execution.quantity());
+        var newTotalCents = totalCents + ((isSelling ? -1 : 1) * executionPriceCents);
+        quantity += ((isSelling ? -1 : 1) * qty);
 
-        avgPriceCents = newQty != 0 ? newTotalCents / newQty : 0;
-        quantity = newQty;
+        avgPriceCents = quantity != 0 ? newTotalCents / quantity : 0;
     }
 }

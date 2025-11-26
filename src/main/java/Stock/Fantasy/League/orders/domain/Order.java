@@ -25,7 +25,7 @@ public class Order {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "league_user_id", nullable = false, unique = true)
+    @JoinColumn(name = "league_user_id", nullable = false)
     private LeagueUser leagueUser;
 
     @Column(nullable = false, updatable = false)

@@ -5,11 +5,13 @@ import Stock.Fantasy.League.market.domain.Quote;
 import Stock.Fantasy.League.market.infra.persistence.QuoteBatchRepository;
 import Stock.Fantasy.League.orders.domain.Execution;
 import Stock.Fantasy.League.orders.domain.Order;
+import Stock.Fantasy.League.orders.domain.OrderSide;
 import Stock.Fantasy.League.orders.domain.OrderState;
 import Stock.Fantasy.League.orders.infra.persistence.ExecutionRepository;
 import Stock.Fantasy.League.orders.infra.persistence.OrderRepository;
 import Stock.Fantasy.League.portfolio.services.PortfolioService;
 import Stock.Fantasy.League.user.infra.persistence.UserRepository;
+import jakarta.transaction.NotSupportedException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,9 +85,16 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
 
             // Get most that can be purchased
             // If user can afford, will buy max quantity of order
-            while (maxQty != 0 && balance < price * maxQty) {
-                maxQty--;
+            if (order.getSide().equals(OrderSide.BUY)) {
+                while (maxQty > 0 && balance < price * maxQty) {
+                    maxQty--;
+                }
+            } else if (order.getSide().equals(OrderSide.SELL)) {
+                // TODO: FOR SELLING, CHECK POSITION.
+                    // PROBABLY NEED TO REFACTOR THIS TO APPROPRIATE CLASS.
+                log.error("ERROR - NOT IMPLEMENTED SELLING PROPERLY YET.");
             }
+
 
             // TODO: Notify user was rejected with how much balance needed to buy
             if (maxQty == 0) {
@@ -101,8 +110,8 @@ public class MockMarketDataConsumer implements MarketDataConsumer {
             var execution = Execution.builder()
                     .executedAt(now)
                     .order(order)
-                    .priceCents(price)
                     .symbol(symbol)
+                    .priceCents(price)
                     .quantity(maxQty)
                     .side(order.getSide())
                     .build();
