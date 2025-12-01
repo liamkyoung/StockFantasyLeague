@@ -19,6 +19,13 @@ public class LeagueRepositoryTest {
     @Autowired
     private LeagueRepository leagueRepository;
 
+    // Tests:
+        // 1. StartTime Always < EndTime
+        // 2. Limits on EndTime
+        // 3. Auto-Switching Status when startTime is passed (TODO)
+        // 4. Duration Minimum and Maximum
+
+
     @Test
     public void leagueRepository_saveAll_returnSavedLeague() {
         League league = League.builder()

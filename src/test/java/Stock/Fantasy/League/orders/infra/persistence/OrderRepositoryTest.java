@@ -11,4 +11,11 @@ import java.util.UUID;
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class OrderRepositoryTest {
+    // Test
+        // 1. Find Order By id
+        // 2. Create Order From Data
+            // 2a. Invalid orders:
+                // 2a. Symbol, qty, not enough cash in account?
+
+        // 3. Update order state
 }

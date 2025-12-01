@@ -11,4 +11,8 @@ import java.util.UUID;
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class ExecutionRepositoryTest {
+    // Test
+        // 1. Find Execution By ID
+        // 2. Find Execution By Order
+        // 3. Create Execution From Order Data
 }

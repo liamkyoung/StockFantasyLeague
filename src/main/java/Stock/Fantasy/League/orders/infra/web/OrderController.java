@@ -44,7 +44,4 @@ public class OrderController {
                 .status(HttpStatus.CREATED)
                 .body(new ObjectResponse(order.getId()));
     }
-
-    // Get an existing order
-    // Market executes an order ()
 }

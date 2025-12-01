@@ -6,4 +6,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
-public class UserRepositoryTest { }
+public class UserRepositoryTest {
+    // Tests
+        // 1. Find By Email
+        // 2. Exists By Email
+}

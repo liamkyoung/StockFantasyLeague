@@ -12,5 +12,8 @@ import java.util.UUID;
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class PositionRepositoryTest {
-
+    // Tests
+        // 1. Check position of user and symbol
+        // 2. Incorrect leagueUser / invalid
+        // 3. Incorrect symbol
 }

@@ -17,5 +17,7 @@ import java.util.List;
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
 public class QuoteBatchRepositoryTest {
-
+    // 1. Saving 1 Quote
+    // 2. Saving Many Quotes
+    // 3. Trying to save with not registered symbol
 }

@@ -15,4 +15,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @WebMvcTest(controllers = MarketController.class)
-public class MarketControllerTest { }
+public class MarketControllerTest {
+    // Test
+        // 1. Get Current Symbol Value
+            // 1a. Cache value
+            // 1b. DB value fallback
+}

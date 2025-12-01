@@ -11,6 +11,15 @@ import org.springframework.test.web.servlet.MockMvc;
 
 @WebMvcTest(controllers = OrderController.class)
 public class OrderControllerTest {
+    // Tests
+        // 1. Create order
+        // 2. Get order status
+        // 3. Get orders by user id
+        // 4. Get past orders
+            // 4a. By ticker
+            // 4b. All (pagination)
+
+
     @Autowired
     private MockMvc mockMvc;
 
